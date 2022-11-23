@@ -1,0 +1,83 @@
+﻿// ALVARO GARCIA BARRAGAN
+// A28
+
+
+#include <iostream>
+#include <fstream>
+#include "bintree_eda.h"
+
+
+using namespace std;
+
+template <typename T>
+std::queue <T> resolver(bintree <T> const& arbol) {
+
+    queue <T> colaAux;
+    queue < pair < int,  bintree <T> > > cola;
+
+    int i = 1;
+    cola.push({ 1 , arbol });
+
+    while (!cola.empty()) {
+        auto const& par = cola.front();
+        auto const& nodo = par.second;
+        auto const& altura = par.first;
+
+        if (i == par.first) colaAux.push(nodo.root());
+
+        if (!nodo.left().empty() ) cola.push({ altura+1,nodo.left() });
+
+        if (!nodo.right().empty() ) cola.push({ altura +1 ,nodo.right() });
+
+        i = altura + 1;
+
+        cola.pop();
+           
+    }
+
+
+    return  colaAux;
+}
+
+
+// Resuelve un caso de prueba, leyendo de la entrada la
+// configuración, y escribiendo la respuesta
+
+void resuelveCaso() {
+
+    bintree <int> binaryTree = leerArbol(-1);
+
+    queue <int> perfilIzq = resolver(binaryTree);
+
+
+    while (!perfilIzq.empty()) {
+        cout << perfilIzq.front() << " ";
+        perfilIzq.pop();
+    }
+
+   cout << endl;
+}
+
+int main() {
+    // Para la entrada por fichero.
+    // Comentar para acepta el reto
+#ifndef DOMJUDGE
+    std::ifstream in("datos.txt");
+    auto cinbuf = std::cin.rdbuf(in.rdbuf()); //save old buf and redirect std::cin to casos.txt
+#endif 
+
+    int numCasos;
+
+    cin >> numCasos;
+
+    for (int i = 0; i < numCasos; i++)  resuelveCaso();
+
+
+    // Para restablecer entrada. Comentar para acepta el reto
+#ifndef DOMJUDGE // para dejar todo como estaba al principio
+    std::cin.rdbuf(cinbuf);
+    system("PAUSE");
+#endif
+
+    return 0;
+}
